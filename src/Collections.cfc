@@ -16,25 +16,28 @@ component {
 	 * Create a new collection by executing the provided callback on each 
 	 * element in the provided collection
 	 * 
-	 * @param data     a collection of data, can be a struct or an array
+	 * @param data    	a collection of data, can be a struct or an array
 	 * 
-	 * @param callback the function to be applied on each item of the provided
-	 *                 collection
+	 * @param callback	the function to be applied on each item of the provided
+	 *                	collection
 	 * 
-	 * @return         a collection containing the results of  your callback 
-	 * 				   for each item (array collections return arrays, struct
-	 * 				   collections return structs)
+	 * @return       	a collection containing the results of  your callback 
+	 *                	for each item (array collections return arrays, struct
+	 *                	collections return structs)
 	 **/
 	 public any function map( required any data, required any callback ){
 	 	
-	 	if( ! isCustomFunction(callback) )
-	 		throw( type="TypeError", message="callback is not a function" );
+	 	if( ! isCustomFunction(arguments.callback) )
+	 		throw( type="TypeError", message="Invalid callback", detail="The provided callback is not a valid function." );
+	 		
+	 	if( !( isArray(arguments.data) || isStruct(arguments.data) ) )	
+	 		throw( type="TypeError", message="Invalid collection type", detail="The provided collection is not a valid Structure or Array.");
 	 	 		
 		var v = 0;	
 	 	var k = 0;
 		var dlen = _size(arguments.data);
 		var isArr = isArray(arguments.data);
-		var retData = isStruct(arguments.data) ? {} : [];
+		var retData = isArr ? [] : {};
 		
 		var keys =  isArr ? arguments.data : structKeyArray(arguments.data);
 		
@@ -51,15 +54,18 @@ component {
 	/**
 	 * Applies the provided callback on each item in the collection
 	 * 
-	 * @param data     a collection of data, can be a struct or an array 
+	 * @param data    	a collection of data, can be a struct or an array 
 	 * 
-	 * @param callback the function to be applied on each item of the provided
-	 *                 collection
+	 * @param callback	the function to be applied on each item of the provided
+	 *                	collection
 	 **/
 	 public void function forEach( required any data, required any callback ){
 	 	
-	 	if( ! isCustomFunction(callback) )
-	 		throw( type="TypeError", message="callback is not a function" );
+	 	if( ! isCustomFunction(arguments.callback) )
+	 		throw( type="TypeError", message="Invalid callback", detail="The provided callback is not a valid function." );
+	 		
+	 	if( !( isArray(arguments.data) || isStruct(arguments.data) ) )	
+	 		throw( type="TypeError", message="Invalid collection type", detail="The provided collection is not a valid Structure or Array.");
 	 		
 		var v = 0;	
 	 	var k = 0;
@@ -84,21 +90,24 @@ component {
 	 * value. Structure collections will be iterated by key name in ascending 
 	 * order (i.e. mystruct['apple'], mystruct['banana'], mystruct['cucumber'], ...).
 	 * 
-	 * @param data     		a collection of data, can be a struct or an array  
+	 * @param data        	a collection of data, can be a struct or an array  
 	 * 
-	 * @param callback 		the function builds the accumulated value by being 
-	 *						applied on each item of the provided collection
+	 * @param callback    	the function builds the accumulated value by being 
+	 *                    	applied on each item of the provided collection
 	 * 
-	 * @param initialvalue  an initial value to use instead of the first item 
-	 * 						of the provided collection (optional)
+	 * @param initialvalue	an initial value to use instead of the first item 
+	 *                    	of the provided collection (optional)
 	 * 
-	 * @return        		a value accumulated by each successive iteration
+	 * @return            	a value accumulated by each successive iteration
 	 * 
 	 **/
 	public any function reduce( required any data, required any callback ){
 		
-		if( ! isCustomFunction(callback) )
-	 		throw( type="TypeError", message="callback is not a function" );
+		if( ! isCustomFunction(arguments.callback) )
+	 		throw( type="TypeError", message="Invalid callback", detail="The provided callback is not a valid function." );
+	 		
+	 	if( !( isArray(arguments.data) || isStruct(arguments.data) ) )	
+	 		throw( type="TypeError", message="Invalid collection type", detail="The provided collection is not a valid Structure or Array.");
 	 	
 	 	var v = 0;	
 	 	var k = 0;
@@ -137,21 +146,24 @@ component {
 	 * value. Structure collections will be iterated over by key name in 
 	 * descending order(i.e. ..., mystruct['cucumber'], mystruct['banana'], mystruct['apple']).
 	 * 
-	 * @param data     		a collection of data, can be a struct or an array  
+	 * @param data       	a collection of data, can be a struct or an array  
 	 * 
-	 * @param callback 		the function builds the accumulated value by being 
-	 * 						applied on each item of the provided collection
+	 * @param callback    	the function builds the accumulated value by being 
+	 *                    	applied on each item of the provided collection
 	 * 
-	 * @param initialvalue  an initial value to use instead of the first item 
-	 * 						of the provided collection
+	 * @param initialvalue	an initial value to use instead of the first item 
+	 *                    	of the provided collection
 	 * 
-	 * @return        		a value accumulated by each successive iteration
+	 * @return            	a value accumulated by each successive iteration
 	 * 
 	 **/
 	public any function reduceRight( required any data, required any callback ){
 		
-		if( ! isCustomFunction(callback) )
-	 		throw( type="TypeError", message="callback is not a function" );
+		if( ! isCustomFunction(arguments.callback) )
+	 		throw( type="TypeError", message="Invalid callback", detail="The provided callback is not a valid function." );
+	 		
+	 	if( !( isArray(arguments.data) || isStruct(arguments.data) ) )	
+	 		throw( type="TypeError", message="Invalid collection type", detail="The provided collection is not a valid Structure or Array.");
 	 	
 	 	var v = 0;	
 	 	var k = 0;
@@ -186,18 +198,21 @@ component {
 	 * Returns a filtered collection of items that pass the "test" from the 
 	 * provided callback.
 	 * 
-	 * @param data      a collection of data, can be a struct or an array
+	 * @param data    	a collection of data, can be a struct or an array
 	 * 
-	 * @param callback  the function used to "test" items in the provided 
-	 * 					collection for inclusion in the returned collection
+	 * @param callback	the function used to "test" items in the provided 
+	 *                	collection for inclusion in the returned collection
 	 * 
-	 * @return          a filtered collection( array collections return arrays, 
-	 * 					struct collections return structs)
+	 * @return        	a filtered collection( array collections return arrays, 
+	 *                	struct collections return structs)
 	 **/
 	public any function filter( required any data, required any callback ){
 		
-		if( ! isCustomFunction(callback) )
-	 		throw( type="TypeError", message="callback is not a function" );
+		if( ! isCustomFunction(arguments.callback) )
+	 		throw( type="TypeError", message="Invalid callback", detail="The provided callback is not a valid function." );
+	 		
+	 	if( !( isArray(arguments.data) || isStruct(arguments.data) ) )	
+	 		throw( type="TypeError", message="Invalid collection type", detail="The provided collection is not a valid Structure or Array.");
 	 	
 		var v = 0;
 		var k = 0;
@@ -229,17 +244,21 @@ component {
 	 * Returns true if at least one item in the collection passes the "test" 
 	 * from the provided callback.
 	 * 
-	 * @param data     	a collection of data, can be a struct or an array 
+	 * @param data    	a collection of data, can be a struct or an array 
 	 * 
-	 * @param callback 	the method used to "test" items in the provided 
-	 * 					collection
+	 * @param callback	the method used to "test" items in the provided 
+	 *                	collection
 	 * 
-	 * @return          true if at least one item in the collection passes, 
-	 * 					false otherwise
+	 * @return        	true if at least one item in the collection passes, 
+	 *                	false otherwise
 	 **/
 	public boolean function some( required any data, required any callback ){
-		if( ! isCustomFunction(callback) )
-	 		throw( type="TypeError", message="callback is not a function" );
+		
+		if( ! isCustomFunction(arguments.callback) )
+	 		throw( type="TypeError", message="Invalid callback", detail="The provided callback is not a valid function." );
+	 		
+	 	if( !( isArray(arguments.data) || isStruct(arguments.data) ) )	
+	 		throw( type="TypeError", message="Invalid collection type", detail="The provided collection is not a valid Structure or Array.");
 	 		
 		var v = 0;
 		var k = 0;
@@ -253,7 +272,7 @@ component {
 		
 		for( var i = 1; i <= dlen; i++ ){
 			k = isArr ? i : keys[i];
-			v = arguments.data[ k ];
+			v = arguments.data[k];
 			if( callback( v, k, arguments.data ) )
 				return true;
 		}
@@ -266,18 +285,21 @@ component {
 	 * Returns true if all of the items in the collection pass the "test" from 
 	 * the provided callback.
 	 * 
-	 * @param data     	a collection of data, can be a struct or an array 
+	 * @param data    	a collection of data, can be a struct or an array 
 	 * 
-	 * @param callback 	the method used to "test" items in the provided 
-	 * 					collection
+	 * @param callback	the method used to "test" items in the provided 
+	 *                	collection
 	 * 
-	 * @return          true if all items in the collection pass, false 
-	 * 					otherwise
+	 * @return        	true if all items in the collection pass, false 
+	 *                	otherwise
 	 **/
 	public boolean function every( required any data, required any callback ){
 		
-		if( ! isCustomFunction(callback) )
-	 		throw( type="TypeError", message="callback is not a function" );
+		if( ! isCustomFunction(arguments.callback) )
+	 		throw( type="TypeError", message="Invalid callback", detail="The provided callback is not a valid function." );
+	 		
+	 	if( !( isArray(arguments.data) || isStruct(arguments.data) ) )	
+	 		throw( type="TypeError", message="Invalid collection type", detail="The provided collection is not a valid Structure or Array.");
 
 		var v = 0;
 		var k = "";
@@ -290,7 +312,7 @@ component {
 		
 		for( var i = 1; i <= dlen; i++ ){
 			k = isArr ? i : keys[i];
-			v = arguments.data[ k ];
+			v = arguments.data[k];
 			if( ! callback( v, k, arguments.data ) )
 				return false;
 		}	
@@ -310,7 +332,7 @@ component {
 		if( isStruct(arguments.data) )
 			return structCount(arguments.data);
 			
-		throw( type="TypeError", message="Invalid collection type", detail="The collection that you have passed is not a valid Arrays and Structure.");
+		
 	}
 				
 }
