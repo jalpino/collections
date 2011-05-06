@@ -12,24 +12,24 @@ in the provided collection
 <tt> public any function callback( value, index, collection ){} </tt>
 
 <i>Usage</i>
-<code>
-// Define the callback
-public numeric function multiplyAgeBy20( value, index, data){
-	return value.age * 20;
-}
 
-// Create the Collections object
-c = new Collections();
+	// Define the callback
+	public numeric function multiplyAgeBy20( value, index, data){
+		return value.age * 20;
+	}
+	
+	// Create the Collections object
+	c = new Collections();
+	
+	// Our collection to map
+	data = { 'John'={age=20},'Kelley'={age=30}, 'Nicole'={age=40} };
+	
+	// Map the collection
+	c.map( data, multiplyAgeBy20 );
+	
+	// Returns
+	// {'John'=400,'Kelley'=600, 'Nicole'=800};	
 
-// Our collection to map
-data = { 'John'={age=20},'Kelley'={age=30}, 'Nicole'={age=40} };
-
-// Map the collection
-c.map( data, multiplyAgeBy20 );
-
-// Returns
-// {'John'=400,'Kelley'=600, 'Nicole'=800};	
-</code>
 
 ##public any function reduce( data, callback [, initialvalue ] )
 Executes the provided callback for each element in the collection 
@@ -43,30 +43,30 @@ order (i.e. mystruct['apple'], mystruct['banana'], mystruct['cucumber'], ...).
 <tt> public any function callback( accumulatedvalue, value, index, collection ){} </tt>
 
 <i>Usage</i>
-<code>
-// Define the callback
-public string function concatValues( previous, current, index, data ){
-	return previous & current;
-}
 
-// Create the Collections object
-c = new Collections();
+	// Define the callback
+	public string function concatValues( previous, current, index, data ){
+		return previous & current;
+	}
+	
+	// Create the Collections object
+	c = new Collections();
+	
+	// Our collection to reduce
+	data = {'apple'='a','banana'='b','cucumber'='c'};
+	
+	// Reduce the collection
+	c.reduce( data, concatValues );
+	
+	// Returns
+	// "abc"
+	
+	// Alternative call w/ initial value
+	c.reduce( data, concatValues, "Z" );
+	
+	// Returns
+	// "Zabc"
 
-// Our collection to reduce
-data = {'apple'='a','banana'='b','cucumber'='c'};
-
-// Reduce the collection
-c.reduce( data, concatValues );
-
-// Returns
-// "abc"
-
-// Alternative call w/ initial value
-c.reduce( data, concatValues, "Z" );
-
-// Returns
-// "Zabc"
-</code>	
 	
 ##public any function reduceRight( data, callback [, initialvalue ] )
 Executes the provided callback for each element in the collection 
@@ -80,30 +80,30 @@ descending order(i.e. ..., mystruct['cucumber'], mystruct['banana'], mystruct['a
 <tt> public any function callback( accumulatedvalue, value, index, collection ){} </tt>
 
 <i>Usage</i>
-<code>
-// Define the callback
-public string function concatValues( previous, current, index, data ){
-	return previous & current;
-}
 
-// Create the Collections object
-c = new Collections();
+	// Define the callback
+	public string function concatValues( previous, current, index, data ){
+		return previous & current;
+	}
+	
+	// Create the Collections object
+	c = new Collections();
+	
+	// Our collection to reduce
+	data = {'apple'='a','banana'='b','cucumber'='c'};
+	
+	// Reduce the collection from the right
+	c.reduceRight( data, concatValues );
+	
+	// Returns
+	// "cba"
+	
+	// Alternative call w/ initial value
+	c.reduce( data, concatValues, "Z" );
+	
+	// Returns
+	// "Zcba"
 
-// Our collection to reduce
-data = {'apple'='a','banana'='b','cucumber'='c'};
-
-// Reduce the collection from the right
-c.reduceRight( data, concatValues );
-
-// Returns
-// "cba"
-
-// Alternative call w/ initial value
-c.reduce( data, concatValues, "Z" );
-
-// Returns
-// "Zcba"
-</code>	
 	 
 ##public void function forEach( data, callback )
 Applies the provided callback on each item in the collection
@@ -112,24 +112,24 @@ Applies the provided callback on each item in the collection
 <tt> public any function callback( value, index, collection ){} </tt>
 
 <i>Usage</i>
-<code>
-// Define the callback
-public void function justAandB( value, index, data ){
-	data[index] = value < 4 ? "a" : "b";
-}
 
-// Create the Collections object
-c = new Collections();
+	// Define the callback
+	public void function justAandB( value, index, data ){
+		data[index] = value < 4 ? "a" : "b";
+	}
+	
+	// Create the Collections object
+	c = new Collections();
+	
+	// Our collection to reduce
+	data = [1,2,3,4,5,6];
+	
+	// Iterate over the collection
+	c.foreach( data, justAandB );
+	
+	// Mutated collection is now
+	// ["a","a","a","b","b","b"]
 
-// Our collection to reduce
-data = [1,2,3,4,5,6];
-
-// Iterate over the collection
-c.foreach( data, justAandB );
-
-// Mutated collection is now
-// ["a","a","a","b","b","b"]
-</code>
 
 ##public any function filter( data, callback )
 Returns a filtered collection of items that pass the "test" from the 
@@ -139,24 +139,24 @@ provided callback.
 <tt> public any function callback( value, index, collection ){} </tt>
 
 <i>Usage</i>
-<code>
-// Define the callback
-public void function greaterThan25( value, index, data ){
-	data[index] = value < 4 ? "a" : "b";
-}
 
-// Create the Collections object
-c = new Collections();
+	// Define the callback
+	public void function greaterThan25( value, index, data ){
+		data[index] = value < 4 ? "a" : "b";
+	}
+	
+	// Create the Collections object
+	c = new Collections();
+	
+	// Our collection to reduce
+	data = [8,55,16,100,358,2,-6,25];
+	
+	// Filter the collection
+	c.filter( data, greaterThan25 );
+	
+	// Returns
+	// [55,100,358]
 
-// Our collection to reduce
-data = [8,55,16,100,358,2,-6,25];
-
-// Filter the collection
-c.filter( data, greaterThan25 );
-
-// Returns
-// [55,100,358]
-</code>	
 	
 
 ##public boolean function some( data, callback )
@@ -167,24 +167,24 @@ from the provided callback.
 <tt> public any function callback( value, index, collection ){} </tt>
 
 <i>Usage</i>
-<code>
-// Define the callback
-public boolean function hasZero( value ){
-	return value == 0;
-}
 
-// Create the Collections object
-c = new Collections();
+	// Define the callback
+	public boolean function hasZero( value ){
+		return value == 0;
+	}
+	
+	// Create the Collections object
+	c = new Collections();
+	
+	// Our collection to reduce
+	data = [1,1,1,1,1,0,1];
+	
+	// Test for some zeros
+	c.some( data, hasZero );
+	
+	// Returns
+	// true
 
-// Our collection to reduce
-data = [1,1,1,1,1,0,1];
-
-// Test for some zeros
-c.some( data, hasZero );
-
-// Returns
-// true
-</code>
 	
 
 
@@ -196,22 +196,20 @@ the provided callback.
 <tt> public any function callback( value, index, collection ){} </tt>
 
 <i>Usage</i>
-<code>
-// Define the callback
-public boolean function hasZero( value ){
-	return value == 0;
-}
 
-// Create the Collections object
-c = new Collections();
-
-// Our collection to reduce
-data = [1,1,1,1,1,0,1];
-
-// Test for all zeros
-c.every( data, hasZero );
-
-// Returns
-// false
-</code>
-
+	// Define the callback
+	public boolean function hasZero( value ){
+		return value == 0;
+	}
+	
+	// Create the Collections object
+	c = new Collections();
+	
+	// Our collection to reduce
+	data = [1,1,1,1,1,0,1];
+	
+	// Test for all zeros
+	c.every( data, hasZero );
+	
+	// Returns
+	// false
