@@ -2,7 +2,7 @@ Collections.cfc
 ==================
 Collections.cfc is a library of iteration methods for Coldfusion arrays and structures.
 
-Tested on Railo3.2 and Adobe CF9
+Tested on Railo 3.2 and Adobe Coldfusion 9.01
 
 ##public any function map( data, callback )
 Create a new collection by executing the provided callback on each element 
@@ -106,10 +106,18 @@ descending order(i.e. ..., mystruct['cucumber'], mystruct['banana'], mystruct['a
 
 	 
 ##public void function forEach( data, callback )
-Applies the provided callback on each item in the collection
+Applies the provided callback on each item in the collection. 
+
+It's important to note that while no data is returned from this function, your provided
+collection could be mutated inside of the callback. Structures are pass-by-reference in both 
+Railo and Adobe Coldfusion and thus are subject to modification. Arrays however are 
+<b>pass-by-value in Adobe CF, but are pass-by-reference in Railo</b>.
+
+A good rule of thumb would be to not directly update the provided collection in your callback.
+ 
 
 <i>Callback Signature</i><br>
-<tt> public any function callback( value, index, collection ){} </tt>
+<tt> public void function callback( value, index, collection ){} </tt>
 
 <i>Usage</i>
 

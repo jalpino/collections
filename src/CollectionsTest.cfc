@@ -4,7 +4,6 @@ component extends="mxunit.framework.TestCase" {
 	// The Collection Component to test
 	c = createObject("component","Collections");
 	
-	
 	// ----------------------------------------------------
 	// Map
 	// ----------------------------------------------------
@@ -218,7 +217,6 @@ component extends="mxunit.framework.TestCase" {
 		
 		var results = c.reduceRight( data, addValues, target );
 		
-		trace( results );
 		assertEquals( target, results );
 		
 		// structure
@@ -320,8 +318,6 @@ component extends="mxunit.framework.TestCase" {
 		assertFalse( results );
 		
 	}
-
-
 	
 	// ----------------------------------------------------
 	// Every
@@ -371,14 +367,18 @@ component extends="mxunit.framework.TestCase" {
 	// ----------------------------------------------------
 	public void function testForEach(){
 		var data = [1,2,3,4,5,6];
-		var target = ["a","a","a","b","b","b"];
+		var target = 21;
+
+		request.total = 0; // the callback updates this
 		
-		c.foreach( data, justAandB);
+		c.foreach( data, addValuesToAppScopeVar );
 		
-		assertEquals(target, data);
+		assertEquals(target, request.total);
 		
+	}
+	public void function testForEachStructs(){
 		
-		// structure collections
+		// Adobe and Railo both support pass by value for structs
 		data = {'z'=1,'y'=2,'x'=3,'w'=4,'v'=5};
 		target = {'z'='a','y'='a','x'='a','w'='b','v'='b'};
 		
@@ -413,10 +413,12 @@ component extends="mxunit.framework.TestCase" {
 // ================================================================
 	
 	private numeric function multiplyBy21( value, index, data){
-		return value * 21;
+		var val =  value * 21;
+		return javacast("int",val); 
 	}
 	private numeric function multiplyAgeBy20( value, index, data){
-		return value.age * 20;
+		var val = value.age * 20;
+		return javacast("int",val);
 	}
 	
 	private string function justGender( value, index, data){
@@ -435,6 +437,10 @@ component extends="mxunit.framework.TestCase" {
 		return previous + current;
 	}
 	
+	private void function addValuesToAppScopeVar( value, index, data ){
+		request.total += value;
+	}
+	
 	private boolean function greaterThan25( value ){
 		return value > 25;
 	}
@@ -451,6 +457,10 @@ component extends="mxunit.framework.TestCase" {
 		return value != "cucumber";
 	}
 
+	private void function justAandBComplex( value, index, data ){
+		data[index] = value.z < 4 ? {'z'='a'} : {'z'='b'};
+	}
+	
 	private void function justAandB( value, index, data ){
 		data[index] = value < 4 ? "a" : "b";
 	}
