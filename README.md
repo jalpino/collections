@@ -144,19 +144,19 @@ Returns a filtered collection of items that pass the "test" from the
 provided callback.
 
 <i>Callback Signature</i><br>
-<tt> public any function callback( value, index, collection ){} </tt>
+<tt> public boolean function callback( value, index, collection ){} </tt>
 
 <i>Usage</i>
 
 	// Define the callback
-	public void function greaterThan25( value, index, data ){
-		data[index] = value < 4 ? "a" : "b";
+	public boolean function greaterThan25( value, index, data ){
+		return value > 25;
 	}
 	
 	// Create the Collections object
 	c = new Collections();
 	
-	// Our collection to reduce
+	// Our collection to filter
 	data = [8,55,16,100,358,2,-6,25];
 	
 	// Filter the collection
@@ -172,12 +172,12 @@ Returns true if at least one item in the collection passes the "test"
 from the provided callback.
 
 <i>Callback Signature</i><br>
-<tt> public any function callback( value, index, collection ){} </tt>
+<tt> public boolean function callback( value, index, collection ){} </tt>
 
 <i>Usage</i>
 
 	// Define the callback
-	public boolean function hasZero( value ){
+	public boolean function hasZero( value, index, data ){
 		return value == 0;
 	}
 	
@@ -201,12 +201,12 @@ Returns true if all of the items in the collection pass the "test" from
 the provided callback.
 
 <i>Callback Signature</i><br>
-<tt> public any function callback( value, index, collection ){} </tt>
+<tt> public boolean function callback( value, index, collection ){} </tt>
 
 <i>Usage</i>
 
 	// Define the callback
-	public boolean function hasZero( value ){
+	public boolean function hasZero( value, index, data ){
 		return value == 0;
 	}
 	
