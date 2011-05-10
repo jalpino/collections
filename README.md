@@ -113,9 +113,6 @@ collection could be mutated inside of the callback. Structures are pass-by-refer
 Railo and Adobe Coldfusion and thus are subject to modification. Arrays however are 
 <b>pass-by-value in Adobe CF, but are pass-by-reference in Railo</b>.
 
-A good rule of thumb would be to not directly update the provided collection in your callback.
- 
-
 <i>Callback Signature</i><br>
 <tt> public void function callback( value, index, collection ){} </tt>
 
@@ -130,13 +127,13 @@ A good rule of thumb would be to not directly update the provided collection in 
 	c = new Collections();
 	
 	// Our collection to reduce
-	data = [1,2,3,4,5,6];
+	data = {a=1,b=2,c=3,d=4,e=5,f=6};
 	
 	// Iterate over the collection
 	c.foreach( data, justAandB );
 	
 	// Mutated collection is now
-	// ["a","a","a","b","b","b"]
+	// {a="a",b="a",c="a",d="b",e="b",f="b"}
 
 
 ##public any function filter( data, callback )
