@@ -13,7 +13,7 @@ component extends="mxunit.framework.TestCase" {
 		var data = [1,2,3,4,5,6];
 		var target = [21,42,63,84,105,126];
 		
-		var results  = c.map( data, multiplyBy21 );
+		var results  = c.map( data, multiplyBy21, 2 );
 		
 		debug( results );
 		assertEquals( target, results );
@@ -407,10 +407,70 @@ component extends="mxunit.framework.TestCase" {
 	}
 	
 	
+	// ----------------------------------------------------
+	// Every
+	// ----------------------------------------------------
+	public void function testSort(){
+		
+		// array collection
+		var data = [8,6,7,4,2,3,5,1,6,9];
+		var target = [1,2,3,4,5,6,6,7,8,9];
+		
+		var results = c.sort( data, ascendingOrder );
+		
+		debug(results);
+		assertEquals( target, results );
+	
+	}
+	public void function testSortEmptyCollection(){
+		
+		// array collection
+		var data = [];
+		var target = [];
+		
+		var results = c.sort( data, ascendingOrder );
+		
+		debug(results);
+		assertEquals( target, results );
+	
+	}
+	
+	/*public void function testSortBiggerCollection(){
+		
+		// array collection
+		var n = 1000;
+		var data = [];
+		arrayResize(data, n);
+		
+		for(var i=1; i <= n; i++){
+			data[i] = randRange(1,n);
+		}	
+		var results = c.sort( data, ascendingOrder );
+		debug(results);
+		assertTrue(true);
+	
+	}*/
+	public void function testSortEmptyCollection(){
+		
+		// array collection
+		var data = [];
+		var target = [];
+		
+		var results = c.sort( data, ascendingOrder );
+		
+		debug(results);
+		assertEquals( target, results );
+	
+	}
+	
+	
 	
 // ================================================================
 // Callbacks used for the tests
 // ================================================================
+	private numeric function ascendingOrder( valA, valB ){
+		return valA - valB;
+	}
 	
 	private numeric function multiplyBy21( value, index, data){
 		var val =  value * 21;

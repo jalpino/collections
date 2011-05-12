@@ -320,6 +320,37 @@ component {
 		return true;
 	}
 	
+
+	/**
+	 * Sorts an array collection using the provided callback for comparison
+	 * 
+	 * @param data     the collection to be sorted (arrays only)
+	 * @param callback the function used to determine sort order. if A < B, return -1; if A == B, return 0; if A > B return 1; 
+	 * @return         the sorted collection
+	 **/ 
+	public array function sort( required array data, required any callback ){
+		
+		if( ! isCustomFunction(arguments.callback) )
+	 		throw( type="TypeError", message="Invalid callback", detail="The provided callback is not a valid function." );
+	 		
+		var dlen = arraylen(arguments.data);
+		var curr = 0;
+
+		// Selection Sort (easy, minimal swaps, low overhead)
+		// TODO: implement a faster sort algorithm
+		for( var i=1; i <= dlen; i++){
+			curr = i;
+			for( var j = i+1; j <= dlen; j++ ){
+				if( callback( arguments.data[j], arguments.data[curr] ) < 0 )
+					curr = j; // found a new min val
+			}
+			if( curr != i )
+				arraySwap( arguments.data, i, curr );
+		}
+		
+		return arguments.data;		
+	}
+	
 	
 	
 	/**
