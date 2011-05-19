@@ -450,18 +450,7 @@ component extends="mxunit.framework.TestCase" {
 		assertTrue(true);
 	
 	}*/
-	public void function testSortEmptyCollection(){
-		
-		// array collection
-		var data = [];
-		var target = [];
-		
-		var results = c.sort( data, ascendingOrder );
-		
-		debug(results);
-		assertEquals( target, results );
 	
-	}
 	
 	
 	

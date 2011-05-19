@@ -11,6 +11,7 @@
  */
 component {
 	
+	variable.isRailo32 = structKeyExists( server, "railo") && refind("^3\.2",server.railo.version) ;
 	
 	/**
 	 * Create a new collection by executing the provided callback on each 
@@ -332,6 +333,9 @@ component {
 		
 		if( ! isCustomFunction(arguments.callback) )
 	 		throw( type="TypeError", message="Invalid callback", detail="The provided callback is not a valid function." );
+	 	
+	 	if( ! isArray(arguments.data) )	
+	 		throw( type="TypeError", message="Invalid collection type", detail="The provided collection is not a valid Array.");
 	 		
 		var dlen = arraylen(arguments.data);
 		var curr = 0;

@@ -218,3 +218,36 @@ the provided callback.
 	
 	// Returns
 	// false
+
+
+
+##public any function sort( data, callback )
+Sorts an array collection using the provided comparator method to determine order
+
+<i>Callback Signature</i><br>
+<tt> public numeric function callback( valueA, valueB ){} </tt>
+
+The callback is used to compare two adjacent values in the collection and should return
+the following under the given scenarios:
+* if <b>A</b> is greater than (>) <b>B</b>, return 1
+* if <b>A</b> is less than (<) <b>B</b>, return -1
+* if <b>A</b> is equal to (==) <b>B</b>, return 0 
+
+<i>Usage</i>
+
+	// Define the comparator
+	private numeric function ascendingOrder( valA, valB ){
+		return valA - valB;
+	}
+	
+	// Create the Collections object
+	c = new Collections();
+	
+	// Our collection to reduce
+	data = [8,6,7,4,2,3,5,1,6,9];
+	
+	// Sort in ascending order
+	c.sort( data, ascendingOrder );
+	
+	// Returns
+	// [1,2,3,4,5,6,6,7,8,9]
