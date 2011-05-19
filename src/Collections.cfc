@@ -11,8 +11,6 @@
  */
 component {
 	
-	variable.isRailo32 = structKeyExists( server, "railo") && refind("^3\.2",server.railo.version) ;
-	
 	/**
 	 * Create a new collection by executing the provided callback on each 
 	 * element in the provided collection
