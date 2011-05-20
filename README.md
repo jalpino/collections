@@ -162,7 +162,34 @@ provided callback.
 	// Returns
 	// [55,100,358]
 
+
+##public any function reject( data, callback )
+Returns a filtered collection of items that DO NOT pass the "test" from the 
+provided callback.
+
+<i>Callback Signature</i><br>
+<tt> public boolean function callback( value, index, collection ){} </tt>
+
+<i>Usage</i>
+
+	// Define the callback
+	public boolean function greaterThan25( value, index, data ){
+		return value > 25;
+	}
 	
+	// Create the Collections object
+	c = new Collections();
+	
+	// Our collection to filter
+	data = [8,55,16,100,358,2,-6,25];
+	
+	// Filter the collection
+	c.reject( data, greaterThan25 );
+	
+	// Returns
+	// [8,16,2,-6,25]	
+
+
 
 ##public boolean function some( data, callback )
 Returns true if at least one item in the collection passes the "test" 
@@ -189,7 +216,6 @@ from the provided callback.
 	
 	// Returns
 	// true
-
 	
 
 
@@ -221,6 +247,101 @@ the provided callback.
 
 
 
+##public boolean function detect( data, callback )
+Returns the first item in the collection that passes the "test" 
+from the provided callback.
+
+<i>Callback Signature</i><br>
+<tt> public boolean function callback( value, index, collection ){} </tt>
+
+<i>Usage</i>
+
+	// Define the callback
+	public boolean function dirtyRecord( person ){
+		return person.dirty;
+	}
+	
+	// Create the Collections object
+	c = new Collections();
+	
+	// Our collection to reduce
+	persons = [{name='Justin', dirty=false}, {name='Mary', dirty=true}, {name='John', dirty=false}];
+	
+	// Find the first dirty record
+	c.detect( persons, dirtyRecord );
+	
+	// Returns
+	// { index=2, value={name='Mary', dirty=true} }
+	
+
+##public boolean function min( data, callback )
+Returns the minimum value of the provided collection. The return value
+from the callback is used to determine the rank of the items. The return
+value should be a data type that can be compared using the less than (<)
+operator.  
+
+<i>Callback Signature</i><br>
+<tt> public boolean function callback( value, index ){} </tt>
+
+<i>Usage</i>
+
+	// Use employee age to find the youngest
+	public numeric function byAge( person, index ){
+		return person.age;
+	}
+	
+	// Create the Collections object
+	c = new Collections();
+	
+	// Our collection to reduce
+	persons = [
+			{name='Jill',age=32},
+			{name='Jane',age=18},
+			{name='Janice',age=25}
+		];
+	
+	// Find the youngest person in the collection
+	c.min( persons, byAge );
+	
+	// Returns
+	// { name='Jane', age=18 }
+	
+	
+	
+##public boolean function max( data, callback )
+Returns the maximum value of the provided collection. The return value
+from the callback is used to determine the rank of the items. The return
+value should be a data type that can be compared using the greater than (>)
+operator.  
+
+<i>Callback Signature</i><br>
+<tt> public boolean function callback( value, index ){} </tt>
+
+<i>Usage</i>
+
+	// Use employee age to find the oldest
+	public numeric function byAge( person, index ){
+		return person.age;
+	}
+	
+	// Create the Collections object
+	c = new Collections();
+	
+	// Our collection to reduce
+	persons = [
+			{name='Jill',age=32},
+			{name='Jane',age=18},
+			{name='Janice',age=25}
+		];
+	
+	// Find the youngest person in the collection
+	c.max( persons, byAge );
+	
+	// Returns
+	// { name='Jill', age=32 }		
+	
+	
+
 ##public any function sort( data, callback )
 Sorts an array collection using the provided comparator method to determine order
 
@@ -251,3 +372,5 @@ the following under the given scenarios:
 	
 	// Returns
 	// [1,2,3,4,5,6,6,7,8,9]
+
+	

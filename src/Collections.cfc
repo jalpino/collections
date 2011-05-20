@@ -10,7 +10,7 @@
  * 
  */
 component {
-	
+
 	/**
 	 * Create a new collection by executing the provided callback on each 
 	 * element in the provided collection
@@ -31,11 +31,12 @@ component {
 	 		
 	 	if( !( isArray(arguments.data) || isStruct(arguments.data) ) )	
 	 		throw( type="TypeError", message="Invalid collection type", detail="The provided collection is not a valid Structure or Array.");
-	 	 		
+
 		var v = 0;	
 	 	var k = 0;
 		var dlen = _size(arguments.data);
 		var isArr = isArray(arguments.data);
+		
 		var retData = isArr ? [] : {};
 		
 		var keys =  isArr ? arguments.data : structKeyArray(arguments.data);
@@ -153,7 +154,7 @@ component {
 	 * @param initialvalue	an initial value to use instead of the first item 
 	 *                    	of the provided collection
 	 * 
-	 * @return            	a value accumulated by each successive iteration
+	 * @return            	a value accumulated by each successive iteration. If the collection is empty, an empty string is returned.
 	 * 
 	 **/
 	public any function reduceRight( required any data, required any callback ){
@@ -202,40 +203,28 @@ component {
 	 * @param callback	the function used to "test" items in the provided 
 	 *                	collection for inclusion in the returned collection
 	 * 
-	 * @return        	a filtered collection( array collections return arrays, 
-	 *                	struct collections return structs)
+	 * @return        	a filtered collection( array collections return an array, 
+	 *                	struct collections return a struct)
 	 **/
 	public any function filter( required any data, required any callback ){
-		
-		if( ! isCustomFunction(arguments.callback) )
-	 		throw( type="TypeError", message="Invalid callback", detail="The provided callback is not a valid function." );
-	 		
-	 	if( !( isArray(arguments.data) || isStruct(arguments.data) ) )	
-	 		throw( type="TypeError", message="Invalid collection type", detail="The provided collection is not a valid Structure or Array.");
-	 	
-		var v = 0;
-		var k = 0;
-		var dlen = _size(arguments.data);
-		var isArr = isArray(arguments.data);
-		var retData = isArr ? [] : {};
-		
-		if( ! dlen )
-			return retData;
-			
-		var keys =  isArr ? arguments.data : structKeyArray(arguments.data);
-
-		for( var i = 1; i <= dlen; i++ ){
-			k = isArr ? i : keys[i];
-			v = arguments.data[ k ];
-			if( callback( v, k, arguments.data ) ){
-				if( isArr )
-					arrayAppend(retData, v);
-				else
-					retData[k] = v;
-			}
-		}
-			
-		return retData;
+		return _filter( arguments.data, callback, true );
+	}
+	
+	
+	/**
+	 * Returns a filtered collection of items that DO NOT pass the "test" from the 
+	 * provided callback.
+	 * 
+	 * @param data    	a collection of data, can be a struct or an array
+	 * 
+	 * @param callback	the function used to "test" items in the provided 
+	 *                	collection for exclusion in the returned collection
+	 * 
+	 * @return        	a filtered collection( array collections return an array, 
+	 *                	struct collections return a struct)
+	 **/
+	public any function reject( required any data, required any callback ){
+		return _filter( arguments.data, callback, false );
 	}
 	
 	
@@ -279,7 +268,7 @@ component {
 		return false;
 	}
 	
-	
+		
 	/**
 	 * Returns true if all of the items in the collection pass the "test" from 
 	 * the provided callback.
@@ -354,6 +343,186 @@ component {
 	}
 	
 	
+	/**
+	 * Returns the first item in the collection that passes the "test" 
+	 * from the provided callback.
+	 * 
+	 * @param data    	a collection of data, can be a struct or an array 
+	 * 
+	 * @param callback	the method used to "test" items in the provided 
+	 *                	collection
+	 * 
+	 * @return        	{ index=<foo>, value=<bar> }; a structure containing 
+	 * 					the index and value of the first item in the collection 
+	 * 					to pass the test. If no items pass the test, the following
+	 * 					default is returned, { index=0, value="" };
+	 **/
+	public any function detect( required any data, required any callback ){
+		
+		if( ! isCustomFunction(arguments.callback) )
+	 		throw( type="TypeError", message="Invalid callback", detail="The provided callback is not a valid function." );
+	 		
+	 	if( !( isArray(arguments.data) || isStruct(arguments.data) ) )	
+	 		throw( type="TypeError", message="Invalid collection type", detail="The provided collection is not a valid Structure or Array.");
+	 		
+		var v = 0;
+		var k = 0;
+		var dlen = _size(arguments.data);
+		var isArr = isArray(arguments.data);
+		var nill = { index=0, value="" };
+		
+		if( ! dlen )
+			return nill;
+			
+		var keys =  isArr ? arguments.data : structKeyArray(arguments.data);
+		
+		for( var i = 1; i <= dlen; i++ ){
+			k = isArr ? i : keys[i];
+			v = arguments.data[k];
+			if( callback( v, k, arguments.data ) )
+				return { index=k, value=v };
+		}
+		
+		return nill;
+	}
+	
+	
+	/**
+	 * Returns the minimum value of the provided collection. The return value
+	 * from the callback is used to determine the rank of the items. The return
+	 * value should be a data type that can be compared using the less than (<)
+	 * operator.   
+	 * 
+	 * @param data        	a collection of data, can be a struct or an array  
+	 * 
+	 * @param callback    	the function to generate the value used in determining
+	 * 						the minimum value.
+	 * 
+	 * @return            	the "minimum value" item of the collection
+	 * 
+	 **/
+	public any function min( required any data, required any callback ){
+		
+		if( ! isCustomFunction(arguments.callback) )
+	 		throw( type="TypeError", message="Invalid callback", detail="The provided callback is not a valid function." );
+	 		
+	 	if( !( isArray(arguments.data) || isStruct(arguments.data) ) )	
+	 		throw( type="TypeError", message="Invalid collection type", detail="The provided collection is not a valid Structure or Array.");
+	 	
+	 	var v = 0;	
+	 	var k = 0;
+	 	var i = 1;
+		var dlen = _size(arguments.data);
+		var isArr = isArray(arguments.data);
+		
+		if( ! dlen )
+			return "";
+		
+		var keys =  isArr ? arguments.data : structKeyArray(arguments.data);
+		k = isArr ? i++ : keys[i++];
+		
+		var mval = arguments.data[k];
+		var mrank = callback( mval, k );
+		
+		for(; i <= dlen; i++ ){
+			k = isArr ? i : keys[i];
+			v = arguments.data[k];
+			rank = callback(v,k);
+			
+			mval = rank < mrank ? v : mval;
+			mrank = rank < mrank ? rank : mrank;
+		}
+		
+		return mval;
+	}
+	
+	
+	/**
+	 * Returns the maximum value of the provided collection. The return value
+	 * from the callback is used to determine the rank of the items. The return
+	 * value should be a data type that can be compared using the greater than (>)
+	 * operator. 
+	 * 
+	 * @param data        	a collection of data, can be a struct or an array  
+	 * 
+	 * @param callback    	the function to generate the value used in determining
+	 * 						the maximum value.
+	 * 
+	 * @return            	the "maximum value" item of the collection
+	 * 
+	 **/
+	public any function max( required any data, required any callback ){
+		
+		if( ! isCustomFunction(arguments.callback) )
+	 		throw( type="TypeError", message="Invalid callback", detail="The provided callback is not a valid function." );
+	 		
+	 	if( !( isArray(arguments.data) || isStruct(arguments.data) ) )	
+	 		throw( type="TypeError", message="Invalid collection type", detail="The provided collection is not a valid Structure or Array.");
+	 	
+	 	var v = 0;	
+	 	var k = 0;
+	 	var i = 1;
+		var dlen = _size(arguments.data);
+		var isArr = isArray(arguments.data);
+		
+		if( ! dlen )
+			return "";
+		
+		var keys =  isArr ? arguments.data : structKeyArray(arguments.data);
+		k = isArr ? i++ : keys[i++];
+		
+		var mval = arguments.data[k];
+		var mrank = callback( mval, k );
+		
+		for(; i <= dlen; i++ ){
+			k = isArr ? i : keys[i];
+			v = arguments.data[k];
+			rank = callback(v,k);
+			
+			mval = rank > mrank ? v : mval;
+			mrank = rank > mrank ? rank : mrank;
+		}
+		
+		return mval;
+	}
+	
+		
+	/**
+	 * Used by filter() and reject(), the 'truth' argument should be true and false respectively
+	 **/
+	private any function _filter( required any data, required any callback, required boolean truth ){
+		
+		if( ! isCustomFunction(arguments.callback) )
+	 		throw( type="TypeError", message="Invalid callback", detail="The provided callback is not a valid function." );
+	 		
+	 	if( !( isArray(arguments.data) || isStruct(arguments.data) ) )	
+	 		throw( type="TypeError", message="Invalid collection type", detail="The provided collection is not a valid Structure or Array.");
+	 	
+		var v = 0;
+		var k = 0;
+		var dlen = _size(arguments.data);
+		var isArr = isArray(arguments.data);
+		var retData = isArr ? [] : {};
+		
+		if( ! dlen )
+			return retData;
+			
+		var keys =  isArr ? arguments.data : structKeyArray(arguments.data);
+
+		for( var i = 1; i <= dlen; i++ ){
+			k = isArr ? i : keys[i];
+			v = arguments.data[ k ];
+			if( callback( v, k, arguments.data ) == arguments.truth ){
+				if( isArr )
+					arrayAppend(retData, v);
+				else
+					retData[k] = v;
+			}
+		}
+			
+		return retData;
+		
+	}
 	
 	/**
 	 * Returns the size of the supplied collection

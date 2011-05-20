@@ -4,6 +4,7 @@ component extends="mxunit.framework.TestCase" {
 	// The Collection Component to test
 	c = createObject("component","Collections");
 	
+	
 	// ----------------------------------------------------
 	// Map
 	// ----------------------------------------------------
@@ -112,10 +113,10 @@ component extends="mxunit.framework.TestCase" {
 		assertEquals( target, results );
 	
 		// structure collection
-		var data = {'apple'='a','banana'='b','cucumber'='c'};
-		var target = "aabc";
+		data = {'apple'='a','banana'='b','cucumber'='c'};
+		target = "aabc";
 		
-		var results = c.reduce( data, concatValues, "a" );
+		results = c.reduce( data, concatValues, "a" );
 		
 		debug( results );
 		assertEquals( target, results );
@@ -156,10 +157,10 @@ component extends="mxunit.framework.TestCase" {
 		assertEquals( target, results );
 	
 		// structure
-		var data = {'apple'='a','banana'='b','cucumber'='c'};
-		var target = "cba";
+		data = {'apple'='a','banana'='b','cucumber'='c'};
+		target = "cba";
 		
-		var results = c.reduceRight( data, concatValues );
+		results = c.reduceRight( data, concatValues );
 		
 		debug( results );
 		assertEquals( target, results );
@@ -201,10 +202,10 @@ component extends="mxunit.framework.TestCase" {
 		assertEquals( target, results );
 	
 		// struct
-		var data = {'apple'='a','banana'='b','cucumber'='c'};
-		var target = "acba";
+		data = {'apple'='a','banana'='b','cucumber'='c'};
+		target = "acba";
 		
-		var results = c.reduceRight( data, concatValues, "a" );
+		results = c.reduceRight( data, concatValues, "a" );
 		
 		debug( results );
 		assertEquals( target, results );
@@ -276,6 +277,50 @@ component extends="mxunit.framework.TestCase" {
 		assertEquals( target, results );
 	}
 
+	// ----------------------------------------------------
+	// Reject
+	// ----------------------------------------------------
+	public void function testReject(){
+		
+		// array
+		var data = [8,55,16,100,358,2,-6,25];
+		var target = [8,16,2,-6,25];
+		
+		var results = c.reject( data, greaterThan25 );
+		
+		debug( results );
+		assertEquals( target, results );
+	
+	
+		// structure
+		data = {'a'='apple','b'='banana','c'='cucumber'};
+		
+		results = c.reject( data, justFruit );
+		
+		debug( results );
+		assertTrue(  arrayLen( structFindValue( results,"cucumber") ) );
+	}
+	
+	public void function testRejectEmptyCollections(){
+		
+		// array
+		var data = [];
+		var target = [];
+		
+		var results = c.reject( data, greaterThan25 );
+		
+		debug( results );
+		assertEquals( target, results );
+	
+	
+		// structure
+		data = {};
+		target = {};
+		results = c.reject( data, justFruit );
+		
+		debug( results );
+		assertEquals( target, results );
+	}
 
 	// ----------------------------------------------------
 	// Some
@@ -310,9 +355,9 @@ component extends="mxunit.framework.TestCase" {
 		
 		
 		// struct collection
-		var data = {};
+		data = {};
 		
-		var results = c.some( data, hasZero );
+		results = c.some( data, hasZero );
 		
 		debug(results);
 		assertFalse( results );
@@ -408,7 +453,7 @@ component extends="mxunit.framework.TestCase" {
 	
 	
 	// ----------------------------------------------------
-	// Every
+	// Sort
 	// ----------------------------------------------------
 	public void function testSort(){
 		
@@ -452,11 +497,196 @@ component extends="mxunit.framework.TestCase" {
 	}*/
 	
 	
+	// ----------------------------------------------------
+	// Detect
+	// ----------------------------------------------------
+	public void function testDetect(){
+		
+		// arrays collection
+		var data = [{name='Justin', dirty=false}, {name='Mary', dirty=true}, {name='John', dirty=false}];
+		var target = {name='Mary', dirty=true};
+		
+		var results = c.detect( data, dirtyRecord );
+		
+		debug(results);
+		assertEquals( target, results.value );
+		
+		
+		// struct collection
+		data = {'a'=1,'b'=1,'c'=0};
+		target = {index='c', value=0};
+		
+		results = c.detect( data, hasZero );
+		
+		debug(results);
+		assertEquals( target, results );
+		
+	}
+	public void function testDetectEmptyCollections(){
+		
+		// arrays collection
+		var data = [];
+		var target = {index=0, value=""};
+		
+		var results = c.detect( data, hasZero );
+		
+		debug(results);
+		assertEquals( target, results );
+		
+		
+		// struct collection
+		data = {};
+		target = {index=0, value=""};
+		
+		results = c.detect( data, hasZero );
+		
+		debug(results);
+		assertEquals( target, results );
+		
+	}
 	
+	
+	// ----------------------------------------------------
+	// Min
+	// ----------------------------------------------------
+	public void function testMin(){
+		
+		// arrays collection
+		var data = [
+				{name='Jill',age=32},
+				{name='Jane',age=18},
+				{name='Janice',age=25}
+			];
+			
+		var target = {name='Jane',age=18};
+		
+		var results = c.min( data, byAge );
+		
+		debug(results);
+		assertEquals( target.name, results.name, "array example" );
+		assertEquals( target.age, results.age, "array example" );
+		
+		
+		// struct collection
+		data = {
+			'Jill'={ 
+				age=32
+			},
+			'Jane'={ 
+				age=18
+			},
+			'Janice'={ 
+				age=25
+			}
+		};
+				
+		target = {age=18};
+		
+		results = c.min( data, byAge);
+		
+		debug(results);
+		assertEquals( target.age, results.age, "struct example" );
+		
+	}
+	public void function testMinEmptyStructure(){
+		
+		// arrays collection
+		var data = [];
+		var target = "";
+		
+		var results = c.min( data, byAge );
+		
+		debug(results);
+		assertEquals( target, results, "array example" );
+		
+		// struct collection
+		data = {};
+		target = "";
+		
+		results = c.min( data, byAge);
+		
+		debug(results);
+		assertEquals( target, results, "struct example" );
+		
+	}
+	
+	
+	
+	
+	// ----------------------------------------------------
+	// Max
+	// ----------------------------------------------------
+	public void function testMax(){
+		
+		// arrays collection
+		var data = [
+				{name='Jill',age=32},
+				{name='Jane',age=18},
+				{name='Janice',age=25}
+			];
+			
+		var target = {name='Jill',age=32};
+		
+		var results = c.max( data, byAge, "array example" );
+		
+		debug(results);
+		assertEquals( target.name, results.name );
+		assertEquals( target.age, results.age );
+		
+		
+		// struct collection
+		data = {
+			'Jill'={ 
+				age=32
+			},
+			'Jane'={ 
+				age=18
+			},
+			'Janice'={ 
+				age=25
+			}
+		};
+				
+		target = {age=32};
+		
+		results = c.max( data, byAge, "struct example");
+		
+		debug(results);
+		assertEquals( target.age, results.age );
+		
+	}
+	public void function testMaxEmptyStructure(){
+		
+		// arrays collection
+		var data = [];
+		var target = "";
+		
+		var results = c.max( data, byAge, "array example" );
+		
+		debug(results);
+		assertEquals( target, results );
+		
+		// struct collection
+		data = {};
+		target = "";
+		
+		results = c.max( data, byAge, "struct example");
+		
+		debug(results);
+		assertEquals( target, results );
+		
+	}
 	
 // ================================================================
 // Callbacks used for the tests
 // ================================================================
+	private boolean function dirtyRecord( person ){
+		return person.dirty;
+	}
+	private numeric function byAge( employee, index ){
+		return employee.age;
+	}
+	
 	private numeric function ascendingOrder( valA, valB ){
 		return valA - valB;
 	}
