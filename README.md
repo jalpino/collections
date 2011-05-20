@@ -4,6 +4,7 @@ Collections.cfc is a library of iteration methods for Coldfusion arrays and stru
 
 Tested on Railo 3.2 and Adobe Coldfusion 9.01
 
+
 ##public any function map( data, callback )
 Create a new collection by executing the provided callback on each element 
 in the provided collection
@@ -373,4 +374,13 @@ the following under the given scenarios:
 	// Returns
 	// [1,2,3,4,5,6,6,7,8,9]
 
+
+
+Change Log
+==================
+
++   2011-05-19
+	Added min(), max(), detect(), reject()
 	
++	2011-05-12
+	Added sort()	

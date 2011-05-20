@@ -1,9 +1,10 @@
 /**
- * Iteration functions for mapping/reducing/filtering/etc Coldfusion 
- * collections (Arrays, Structures and Queries). These methods attempt
- * to follow their counterparts outlined in ECMA-262, 5th edition
+ * Iteration functions for Coldfusion Array and Structure Collections
  * 
+ * Resources:
  * http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-262.pdf
+ * http://documentcloud.github.com/underscore/
+ * 
  * 
  * Justin Alpino (twitter: @jalpino)
  * April 27, 2011
