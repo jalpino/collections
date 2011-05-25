@@ -12,6 +12,7 @@
  */
 component {
 
+
 	/**
 	 * Create a new collection by executing the provided callback on each 
 	 * element in the provided collection
@@ -399,7 +400,7 @@ component {
 	 * @param callback    	the function to generate the value used in determining
 	 * 						the minimum value.
 	 * 
-	 * @return            	the "minimum value" item of the collection
+	 * @return            	{ index=<foo>, value=<bar> }; the "minimum value" and it's index from the provided collection
 	 * 
 	 **/
 	public any function min( required any data, required any callback ){
@@ -422,6 +423,7 @@ component {
 		var keys =  isArr ? arguments.data : structKeyArray(arguments.data);
 		k = isArr ? i++ : keys[i++];
 		
+		var mkey = k;
 		var mval = arguments.data[k];
 		var mrank = callback( mval, k );
 		
@@ -431,10 +433,12 @@ component {
 			rank = callback(v,k);
 			
 			mval = rank < mrank ? v : mval;
+			mkey = rank < mrank ? k : mkey;
 			mrank = rank < mrank ? rank : mrank;
+			
 		}
 		
-		return mval;
+		return { index=mkey, value=mval };
 	}
 	
 	
@@ -449,7 +453,7 @@ component {
 	 * @param callback    	the function to generate the value used in determining
 	 * 						the maximum value.
 	 * 
-	 * @return            	the "maximum value" item of the collection
+	 * @return            	{ index=<foo>, value=<bar> }; the "maximum value" and it's index from the provided collection
 	 * 
 	 **/
 	public any function max( required any data, required any callback ){
@@ -472,6 +476,7 @@ component {
 		var keys =  isArr ? arguments.data : structKeyArray(arguments.data);
 		k = isArr ? i++ : keys[i++];
 		
+		var mkey = k;
 		var mval = arguments.data[k];
 		var mrank = callback( mval, k );
 		
@@ -481,10 +486,34 @@ component {
 			rank = callback(v,k);
 			
 			mval = rank > mrank ? v : mval;
+			mkey = rank > mrank ? k : mkey;
 			mrank = rank > mrank ? rank : mrank;
 		}
 		
-		return mval;
+		return { index=mkey, value=mval };
+	}
+	
+	/**
+	 * Flattens a nested array collection to a single level. Accepts 
+	 * arrays n level deep.
+	 * 
+	 * @param data  an array collection
+	 * 
+	 * @return      a flatten version of the provided collection
+	 **/
+	public array function flatten( required array data ){
+		return reduce( data, _flatten, [] );
+	}
+
+	/**
+	 * Used by flatten() to equal out the heirarchy
+	 **/
+	private any function _flatten( any accumulator, any value ){
+		if ( isArray( arguments.value ) ) {
+			return _merge(arguments.accumulator, flatten(arguments.value) );
+		}
+		arrayAppend( arguments.accumulator, arguments.value);
+      	return arguments.accumulator;
 	}
 	
 		
@@ -524,6 +553,17 @@ component {
 		return retData;
 		
 	}
+	
+	/**
+	 * Concatinates two arrays
+	 **/
+	private array function _merge( required array arr1, required array arr2 ){
+		for( var i=1; i <= arraylen(arguments.arr2); i++){
+			arrayAppend( arguments.arr1, arguments.arr2[i] );
+		}
+		return arguments.arr1;
+	}
+		
 	
 	/**
 	 * Returns the size of the supplied collection

@@ -343,7 +343,7 @@ operator.
 	
 	
 
-##public any function sort( data, callback )
+##public array function sort( data, callback )
 Sorts an array collection using the provided comparator method to determine order
 
 <i>Callback Signature</i><br>
@@ -351,9 +351,9 @@ Sorts an array collection using the provided comparator method to determine orde
 
 The callback is used to compare two adjacent values in the collection and should return
 the following under the given scenarios:
-* if <b>A</b> is greater than (>) <b>B</b>, return 1
-* if <b>A</b> is less than (<) <b>B</b>, return -1
-* if <b>A</b> is equal to (==) <b>B</b>, return 0 
++	if <b>A</b> is greater than (>) <b>B</b>, return 1
++	if <b>A</b> is less than (<) <b>B</b>, return -1
++	if <b>A</b> is equal to (==) <b>B</b>, return 0 
 
 <i>Usage</i>
 
@@ -373,6 +373,25 @@ the following under the given scenarios:
 	
 	// Returns
 	// [1,2,3,4,5,6,6,7,8,9]
+
+
+##public array function flatten( data )
+Flattens a nested array collection to a single level. Accepts arrays n level deep.
+
+<i>Usage</i>
+
+	// Create the Collections object
+	c = new Collections();
+	
+	// a deeply nested array
+	data = [0,[1,2,[3,[4,5]],6]];
+	
+	// Sort in ascending order
+	c.flatten( data );
+	
+	// Returns
+	// [0,1,2,3,4,5,6]
+
 
 
 

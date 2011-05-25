@@ -2,7 +2,7 @@ component extends="mxunit.framework.TestCase" {
 
 
 	// The Collection Component to test
-	c = createObject("component","Collections");
+	c = createObject("component","collections.Collections");
 	
 	
 	// ----------------------------------------------------
@@ -558,13 +558,12 @@ component extends="mxunit.framework.TestCase" {
 				{name='Janice',age=25}
 			];
 			
-		var target = {name='Jane',age=18};
+		var target = {index=2, value={name='Jane',age=18} };
 		
 		var results = c.min( data, byAge );
 		
 		debug(results);
-		assertEquals( target.name, results.name, "array example" );
-		assertEquals( target.age, results.age, "array example" );
+		assertEquals( target, results, "array example" );
 		
 		
 		// struct collection
@@ -580,12 +579,12 @@ component extends="mxunit.framework.TestCase" {
 			}
 		};
 				
-		target = {age=18};
+		target = {index='Jane',value={age=18}};
 		
 		results = c.min( data, byAge);
 		
 		debug(results);
-		assertEquals( target.age, results.age, "struct example" );
+		assertEquals( target, results, "struct example" );
 		
 	}
 	public void function testMinEmptyStructure(){
@@ -625,13 +624,12 @@ component extends="mxunit.framework.TestCase" {
 				{name='Janice',age=25}
 			];
 			
-		var target = {name='Jill',age=32};
+		var target = {index=1,value={name='Jill',age=32}};
 		
 		var results = c.max( data, byAge, "array example" );
 		
 		debug(results);
-		assertEquals( target.name, results.name );
-		assertEquals( target.age, results.age );
+		assertEquals( target, results );
 		
 		
 		// struct collection
@@ -647,12 +645,12 @@ component extends="mxunit.framework.TestCase" {
 			}
 		};
 				
-		target = {age=32};
+		target = {index='Jill',value={age=32} };
 		
 		results = c.max( data, byAge, "struct example");
 		
 		debug(results);
-		assertEquals( target.age, results.age );
+		assertEquals( target, results );
 		
 	}
 	public void function testMaxEmptyStructure(){
@@ -676,6 +674,31 @@ component extends="mxunit.framework.TestCase" {
 		assertEquals( target, results );
 		
 	}
+	
+	
+	// ----------------------------------------------------
+	// Max
+	// ----------------------------------------------------
+	public void function testFlatten(){
+		var data = [0,[1,2,[3,[4,5]],6]];
+		var target = [0,1,2,3,4,5,6];
+		
+		var results = c.flatten( data );
+		
+		debug( results );
+		assertEquals( target, results );
+		
+	}
+	public void function testFlattenEmptyArray(){
+		var data = [];
+		var target = [];
+		
+		var results = c.flatten( data );
+		
+		debug( results );
+		assertEquals( target, results );
+	}
+	
 	
 // ================================================================
 // Callbacks used for the tests
