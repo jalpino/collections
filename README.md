@@ -2,7 +2,11 @@ Collections.cfc
 ==================
 Collections.cfc is a library of iteration methods for Coldfusion arrays and structures.
 
-Tested on Railo 3.2 and Adobe Coldfusion 9.01
+Here is an [blog post](http://www.jalpino.com/new/index.cfm/event/read/entry/Map_and_Reduce_in_Coldfusion_a_pratical_example) that walks you through 
+various ways in which to use the library, or you can jump right over to the [code](https://gist.github.com/1001432)
+from the example.
+
+Tested on Railo 3.2.2 and Adobe Coldfusion 9.0.1
 
 
 ##public any function map( data, callback )
@@ -376,7 +380,7 @@ the following under the given scenarios:
 
 
 ##public array function flatten( data )
-Flattens a nested array collection to a single level. Accepts arrays n level deep.
+Flattens a nested array collection to a single level. Accepts arrays n levels deep.
 
 <i>Usage</i>
 
@@ -397,6 +401,8 @@ Flattens a nested array collection to a single level. Accepts arrays n level dee
 
 Change Log
 ==================
++	2011-05-26
+	Added flatten()
 
 +   2011-05-19
 	Added min(), max(), detect(), reject()
