@@ -12,6 +12,9 @@
  */
 component {
 
+	variables.jCollections = createObject("java","java.util.Collections");
+	variables.nill = { index=0, value="" };
+	
 
 	/**
 	 * Create a new collection by executing the provided callback on each 
@@ -346,6 +349,19 @@ component {
 	
 	
 	/**
+	 * Randomizes the position of items within an array
+	 * 
+	 * @param data an array of items to randomize
+	 * 
+	 * @return     a randomized version of the provided array
+	 **/
+	public array function shuffle( required array data ){
+		variables.jCollections.shuffle( arguments.data );
+		return arguments.data;
+	}
+	
+	
+	/**
 	 * Returns the first item in the collection that passes the "test" 
 	 * from the provided callback.
 	 * 
@@ -371,10 +387,9 @@ component {
 		var k = 0;
 		var dlen = _size(arguments.data);
 		var isArr = isArray(arguments.data);
-		var nill = { index=0, value="" };
 		
 		if( ! dlen )
-			return nill;
+			return variables.nill;
 			
 		var keys =  isArr ? arguments.data : structKeyArray(arguments.data);
 		
@@ -385,8 +400,9 @@ component {
 				return { index=k, value=v };
 		}
 		
-		return nill;
+		return variables.nill;
 	}
+	
 	
 	
 	/**
@@ -493,6 +509,7 @@ component {
 		return { index=mkey, value=mval };
 	}
 	
+	
 	/**
 	 * Flattens a nested array collection to a single level. Accepts 
 	 * arrays n level deep.
@@ -504,6 +521,106 @@ component {
 	public array function flatten( required array data ){
 		return reduce( data, _flatten, [] );
 	}
+
+
+	/**
+	 * Builds a collection in which only the items found in all of the provided
+	 * collections are included. All provided collections must be of the same type,
+	 * Arrays or Structures. This method will accept N number of collections followed
+	 * by an optional comparitor function. 
+	 * 
+	 * @param data1	     a collection of data, can be a struct or an array 
+	 * 
+	 * @param data2	     a collection of data, can be a struct or an array
+	 * 
+	 * @param dataN      (optional) a collection of data, can be a struct or an array
+	 * 
+	 * @param callback   (optional) the function used to compare two values for equality.
+	 *                   If it is not provided, this method will to use the standard
+	 *                   == equality operator for comparison
+	 * 
+	 * @return            a new collection containing only those items that appear 
+	 *                    in all of the provided collections.
+	 **/
+	public any function intersect( ){
+		var arg = arguments;
+		var alen = arraylen(arg);
+		var comparitor = "";
+		var c = 1;
+		var isArr = false;
+		
+		if( ! alen )
+			throw( type="IllegalArgumentException", message="Missing arguments", detail="At least two collection are required");
+		
+		if( alen > 2 && isCustomFunction( arg[alen] ) ){
+			comparitor = arg[alen];
+			arrayDeleteAt( arg, alen-- );
+		}else{
+			comparitor = _equals;
+		}
+		
+		isArr = every( arg, _isArray );
+		if( ! ( isArr || every(arg, _isStruct) ) )
+			throw( type="TypeError", message="Invalid collection types", detail="The provided collections must all be of type Array or of type Structure, you can not mix the collection types to intersect.");
+		
+		var d = arg[ c++ ];
+		while( c <= alen ){
+			d = _intersect( d, arg[c++], comparitor, isArr );
+		}
+		
+		return d;			
+	}
+
+
+	/**
+	 * Used by intersect() to combine common elements in two collections
+	 **/
+	private any function _intersect( required any a, required any b, required any comparitor, required boolean isArr ){
+		/* 
+		  TODO: Use something like this if closures and anon functions make into CF
+		  for( k in arguments.b ){
+		  		v = arguments.b[k];
+		  		c = arguments.comparitor;
+		  		item = detect( arguments.b, function( val ){ return c( val, v ); });
+				if( ! _equals( item, variables.nill ) )
+					_append( newcollection, item);
+		  }
+		  return arguments.a;
+		*/
+		
+		var retData = isArr ? [] : {};
+		
+		if( ! _size(arguments.a) || ! _size(arguments.b) )
+			return retData;
+		
+		var dlenA = _size( arguments.a );
+		var dlenB = _size( arguments.b );
+		var keysA = isArr ? arguments.a : structKeyArray(arguments.a);
+		var keysB = isArr ? arguments.b : structKeyArray(arguments.b);
+		var kA = ""; 
+		var kB = ""; 
+		var vA = "";
+		var vB = "";
+
+		for(var i = 1; i <= dlenA; i++ ){
+			kA = arguments.isArr ? i : keysA[i];
+			vA = arguments.a[ kA ];
+			
+			for(var j = 1; j <= dlenB; j++ ){
+				kB = arguments.isArr ? j : keysB[j];
+				vB = arguments.b[ kB ]	;
+				if( arguments.comparitor(vA,vB) ){
+					if( isArr )
+						arrayAppend( retData, vB );
+					else
+						retData[ kB ] = vB;
+				}
+			}	
+		}
+		
+		return retData;
+	}
+
 
 	/**
 	 * Used by flatten() to equal out the heirarchy
@@ -554,10 +671,12 @@ component {
 		
 	}
 	
+	
 	/**
 	 * Concatinates two arrays
 	 **/
 	private array function _merge( required array arr1, required array arr2 ){
+		// Railo has arrayMerge, but this a lot faster
 		for( var i=1; i <= arraylen(arguments.arr2); i++){
 			arrayAppend( arguments.arr1, arguments.arr2[i] );
 		}
@@ -574,8 +693,32 @@ component {
 			
 		if( isStruct(arguments.data) )
 			return structCount(arguments.data);
-			
-		
+	}
+
+
+	/**
+	 * Wrapper for isArray to be used by Collections.cfc methods
+	 **/
+	private boolean function _isArray( required any data ){
+		return isArray( arguments.data );
+	}
+	
+	
+	/**
+	 * Wrapper for isStruct to be used by Collections.cfc methods
+	 **/
+	private boolean function _isStruct( required any data ){
+		return isStruct( arguments.data );
+	}
+
+	
+	/**
+	 * Returns true if a and b are equal using the standard equality operator ==
+	 * 
+	 * TODO: Make this better, mimicking mxunit's assertEquals();
+	 **/
+	private boolean function _equals( required any a, required any b ){
+		return arguments.a == arguments.b;
 	}
 				
 }

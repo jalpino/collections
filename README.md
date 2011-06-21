@@ -397,10 +397,55 @@ Flattens a nested array collection to a single level. Accepts arrays n levels de
 	// [0,1,2,3,4,5,6]
 
 
+##public any function intersect( dataA, dataB [, dataN] [, comparitor] )
+Intersect takes in two or more collections of the same type and will return
+a new collection containing only those items that appear in all of the supplied collections.
+An optional comparitor method can be supplied to test for equality between collection
+items. By default, Collections.cfc will use the standard equality operator (==) for
+comparison. Note: All collections must be of the same type.
+
+<i>Comparitor Signature</i><br>
+<tt> public boolean function comparitor( valueA, valueB ){} </tt>
+
+<i>Usage</i>
+
+	// Create the Collections object
+	c = new Collections();
+	
+	// Some collections to work with
+	animals1 = {
+		dog = "Roof",
+		cat = "meow",
+		fish = "blurb",
+		lion = "roar"
+	};
+	
+	animals2 = {
+		donkey = "hehaw",
+		cat = "meow",
+		fish = "blurb",
+		horse = "brrrrr"
+	};
+	
+	animals3 = {
+		donkey = "hehaw",
+		fish = "blurb",
+		bird = "ka-kaw"
+	};
+	
+	// Find the common animals
+	c.intersect( animals1, animals2, animals3 );	
+	
+	// Returns
+	// { fish = "blurb" };
+
 
 
 Change Log
 ==================
++	2011-06-21
+	Added intersect();
+	
 +	2011-05-26
 	Added flatten()
 

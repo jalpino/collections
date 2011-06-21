@@ -677,7 +677,7 @@ component extends="mxunit.framework.TestCase" {
 	
 	
 	// ----------------------------------------------------
-	// Max
+	// Flatten
 	// ----------------------------------------------------
 	public void function testFlatten(){
 		var data = [0,[1,2,[3,[4,5]],6]];
@@ -699,10 +699,166 @@ component extends="mxunit.framework.TestCase" {
 		assertEquals( target, results );
 	}
 	
+	// ----------------------------------------------------
+	// Intersect
+	// ----------------------------------------------------
+	public void function testIntersect(){
+		
+		// Happy path, two collections
+		var dataA = [0,1,2,3,4];
+		var dataB = [2,3,5,6,7,8];
+		
+		var target = [2,3];
+		
+		var results = c.intersect( dataA, dataB );
+		
+		debug( results );
+		assertEquals( target, results );
+		
+		// Happy path, two collections
+		dataA = {
+			dog = "Roof",
+			cat = "meow",
+			fish = "blurb",
+			lion = "rwor"
+		};
+		dataB = {
+			donkey = "hehaw",
+			cat = "meow",
+			fish = "blurb",
+			horse = "brrrrr"
+		};
+		
+		var target = {
+			cat = "meow",
+			fish = "blurb"
+		};
+		
+		results = c.intersect( dataA, dataB );
+		
+		debug( results );
+		assertEquals( target, results );
+	}
+	public void function testIntersectMultiCollections(){
+		
+		var dataA = [0,1,2,3,4,5];
+		var dataB = [2,3,4,5,6,7];
+		var dataC = [5,6,7,8,9,0];
+		
+		var target = [5];
+		
+		var results = c.intersect( dataA, dataB, dataC );
+		
+		debug( results );
+		assertEquals( target, results );
+		
+		
+		// Happy path, two collections
+		dataA = {
+			dog = "Roof",
+			cat = "meow",
+			fish = "blurb",
+			lion = "rwor"
+		};
+		dataB = {
+			donkey = "hehaw",
+			cat = "meow",
+			fish = "blurb",
+			horse = "brrrrr"
+		};
+		dataC = {
+			donkey = "hehaw",
+			fish = "blurb",
+			bird = "ka-kaw"
+		};
+		
+		var target = {
+			fish = "blurb"
+		};
+		
+		results = c.intersect( dataA, dataB, dataC );
+		
+		debug( results );
+		assertEquals( target, results );
+	}
+	public void function testIntersectCustomComparitor(){
+		
+		// Happy path, two collections
+		var dataA = [
+			{ feature : { name = "memory"} },
+			{ feature : { name = "big screen"} },
+			{ feature : { name = "os"} }
+		];
+		var dataB = [
+			{ feature : { name = "flash memory"} },
+			{ feature : { name = "big screen"} },
+			{ feature : { name = "kernal"} }
+		];
+		
+		var target = [
+			{ feature : { name = "big screen"} }
+		];
+		
+		var results = c.intersect( dataA, dataB, sameFeatures );
+		
+		debug( results );
+		assertEquals( target, results );
+		
+	}
+	public void function testIntersectNomatches(){
+		
+		// Happy path, two collections
+		var dataA = [0,1,2,3,4];
+		var dataB = [5,6,7,8,9];
+		
+		var target = [];
+		
+		var results = c.intersect( dataA, dataB );
+		
+		debug( results );
+		assertEquals( target, results );
+		
+	}
+	public void function testIntersectBadArgs(){
+		
+		// Mixing of collection types
+		try{
+			var dataA = [];
+			var dataB = {};
+			
+			var results = c.intersect( dataA, dataB );
+			
+			fail("Collections are mixed, should have thrown TypeError");
+			
+		}catch( any e){
+			debug( e );
+			assertEquals( "TypeError", e.type, "Collections are mixed, should have thrown TypeError" );
+		}
+		
+		
+		// No args
+		try{
+			
+			var results = c.intersect();
+			fail("No arguments, should have thrown an IllegalArgumentException");
+			
+		}catch( IllegalArgumentException e){
+			debug( e );
+			assertEquals( "IllegalArgumentException", e.type, "No arguments, should have thrown an IllegalArgumentException" );
+		}
+		
+	}
+	
+	
+	
 	
 // ================================================================
 // Callbacks used for the tests
 // ================================================================
+	private boolean function sameFeatures( a, b ){
+		return a.feature.name == b.feature.name;
+	}
+
 	private boolean function dirtyRecord( person ){
 		return person.dirty;
 	}
